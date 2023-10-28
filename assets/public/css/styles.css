@@ -1,0 +1,21 @@
+.idx-sr-single {
+  padding: 40px 0px;
+}
+
+.idx-sr-single .idx-sr-breadcrumbs {
+  margin-bottom: 20px;
+}
+
+.idx-sr-single .idx-sr-breadcrumbs a {
+  color: #1a1a1a;
+  font-size: 18px;
+}
+
+.idx-sr-single .idx-sr-breadcrumbs a:last-of-type {
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.idx-sr-single .idx-sr-breadcrumbs .separator {
+  padding: 0px 5px;
+}
