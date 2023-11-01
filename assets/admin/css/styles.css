@@ -8,18 +8,22 @@
   align-items: center;
   display: flex;
   margin-bottom: 20px;
-  padding: 40px 20px;
+  padding: 20px;
 }
 
 .idx-sr-admin .idx-sr-header .left {
   margin-right: auto;
 }
 
+.idx-sr-admin .idx-sr-header .dashicons-before {
+  margin-right: 8px;
+}
+
 .idx-sr-admin .idx-sr-header .dashicons-before:before {
   color: #fff;
-  font-size: 36px;
-  width: 36px;
-  height: 36px;
+  font-size: 56px;
+  width: 56px;
+  height: 56px;
 }
 
 .idx-sr-admin .idx-sr-header h1 {
@@ -134,7 +138,6 @@
 .idx-sr-admin .idx-sr-content .idx-sr-settings label {
   display: block;
   font-weight: bold;
-  letter-spacing: 3px;
   margin-bottom: 4px;
 }
 
@@ -144,6 +147,7 @@
   border-radius: 10px;
   font-size: 16px;
   max-width: 100%;
+  width: 400px;
   padding: 12px 24px;
 }
 
@@ -230,7 +234,8 @@
 }
 
 .idx-sr-admin .idx-sr-results .idx-sr-status.queued { background-color: #cccccc; }
-.idx-sr-admin .idx-sr-results .idx-sr-status.published { background-color: #2271b1; }
+.idx-sr-admin .idx-sr-results .idx-sr-status.published { background-color: #1ed760; }
+.idx-sr-admin .idx-sr-results .idx-sr-status.updated { background-color: #2271b1; }
 .idx-sr-admin .idx-sr-results .idx-sr-status.error { background-color: #d63638; }
 
 .idx-sr-admin .idx-sr-results .idx-sr-legend {
@@ -261,6 +266,16 @@
   display: flex;
   align-items: center;
   padding: 0px 4px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.idx-sr-admin .idx-sr-results .idx-sr-list .idx-sr-row[href] {
+  font-weight: bold;
+}
+
+.idx-sr-admin .idx-sr-results .idx-sr-list .idx-sr-row[href]:hover {
+  background-color: #ddd;
 }
 
 /* Animations */

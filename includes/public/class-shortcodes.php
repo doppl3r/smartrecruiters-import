@@ -14,11 +14,16 @@
                 'data' => null
             ), $atts);
 
-            $output = 'TODO: // Print list of jobs';
+            // Enqueue search script/styles
+            wp_enqueue_script('search');
+            wp_enqueue_style('search');
 
-            // Add wrapper
-            $output = '<div class="idx-sr-public jobs">' . $output .'</div>';
+            // Render default search form
+            ob_start();
+            include('form-search.php');
+            $output = ob_get_clean();
 
+            // Return output value
             return $output;
         }
     }

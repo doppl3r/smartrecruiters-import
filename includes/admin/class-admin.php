@@ -4,8 +4,11 @@ class IDX_SmartRecruiters_Admin {
   public function __construct() {
     add_action('admin_menu', array($this, 'add_menu_page')); /* Add admin menu and page */
     add_action('admin_enqueue_scripts', array($this, 'add_assets'));
+
+    // Register AJAX functions from CMS admin front-end
     add_action('wp_ajax_import_jobs', array($this, 'import_jobs'));
     add_action('wp_ajax_publish_job', array($this, 'publish_job'));
+    add_action('wp_ajax_trash_job', array($this, 'trash_job'));
   }
 
   public function add_menu_page() {
@@ -18,7 +21,7 @@ class IDX_SmartRecruiters_Admin {
       $menu_slug = 'idx-smartrecruiters';
       $parent_slug = $menu_slug;
       $function = array($this, 'render_import_page');
-      $icon_url = 'dashicons-groups';
+      $icon_url = 'dashicons-cloud-saved';
       $position = 6;
       add_menu_page($page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position);
     
@@ -33,9 +36,15 @@ class IDX_SmartRecruiters_Admin {
       add_submenu_page($parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function);
       
       // List
-      $page_title = 'View All';
-      $menu_title = 'View All';
-      $menu_slug = 'edit.php?post_type=career';
+      $page_title = 'Job Pages';
+      $menu_title = 'Job Pages';
+      $menu_slug = 'edit.php?post_type=job';
+      add_submenu_page($parent_slug, $page_title, $menu_title, $capability, $menu_slug);
+
+      // List
+      $page_title = 'Job Categories';
+      $menu_title = 'Job Categories';
+      $menu_slug = 'edit-tags.php?taxonomy=job_categories&post_type=job';
       add_submenu_page($parent_slug, $page_title, $menu_title, $capability, $menu_slug);
 
       // Settings
@@ -99,7 +108,7 @@ class IDX_SmartRecruiters_Admin {
       // Get token from response data and save cookie
       if (isset($response['access_token'])) {
         $token = $response['access_token'];
-        $expires_in = 1799; // SmartRecruiter tokens expire in 30 minutes
+        $expires_in = 1799; // SmartRecruiters tokens expire in 30 minutes
         setcookie('smartrecruiters_token', $token, time() + $expires_in, '/');
       }
       return $token;
@@ -135,7 +144,7 @@ class IDX_SmartRecruiters_Admin {
   }
 
   public function import_jobs() {
-    // Get a list of all jobs from SmartRecruiter API
+    // Get a list of all jobs from SmartRecruiters API
     $jobs = $this->get_job_list();
 
     // Return JSON results
@@ -145,11 +154,12 @@ class IDX_SmartRecruiters_Admin {
 
   public function publish_job() {
     $job = $this->get_job_details();
+    $status = 'queued';
 
     // Default post data
     $post_arr = array(
       'post_status'  => 'publish',
-      'post_type'    => 'career',
+      'post_type'    => 'job',
       'post_title'   => $job['title']
     );
 
@@ -160,10 +170,12 @@ class IDX_SmartRecruiters_Admin {
       $content .= $section['text'];
     }
     $post_arr['post_content'] = $content;
+    $post_arr['post_excerpt'] = trim(strip_tags(str_replace('<', ' <', $job['jobAd']['sections']['jobDescription']['text'])));
 
     // Update post meta from SmartRecruiters data
     $meta_arr = array(
       'idx_smartrecruiters_id' => $job['id'],
+      'idx_smartrecruiters_title' => $job['title'],
       'idx_smartrecruiters_country' => $job['location']['country'],
       'idx_smartrecruiters_country_code' => $job['location']['countryCode'],
       'idx_smartrecruiters_city' => $job['location']['city'],
@@ -177,7 +189,8 @@ class IDX_SmartRecruiters_Admin {
       'idx_smartrecruiters_department' => $job['department']['label'],
       'idx_smartrecruiters_industry' => $job['industry']['label'],
       'idx_smartrecruiters_employment_type' => $job['typeOfEmployment']['label'],
-      'idx_smartrecruiters_experience_level' => $job['experienceLevel']['label']
+      'idx_smartrecruiters_experience_level' => $job['experienceLevel']['label'],
+      'idx_smartrecruiters_created_on' => $job['createdOn'],
     );
 
     // Convert Smartrecruiters 'properties' array into post meta
@@ -191,14 +204,15 @@ class IDX_SmartRecruiters_Admin {
     // Check if posts with matching job id exist
     $posts = get_posts(array(
       'numberposts'   => 1,
-      'post_type'     => 'career',
+      'post_type'     => 'job',
       'meta_key'      => 'idx_smartrecruiters_id',
       'meta_value'    => $_POST['id']
     ));
     
     if (count($posts) > 0) {
       // Update existing post
-      $post_id = $posts['ID'];
+      $status = 'updated';
+      $post_id = $posts[0]->ID;
       $post_arr['ID'] = $post_id;
       wp_update_post($post_arr);
 
@@ -209,6 +223,7 @@ class IDX_SmartRecruiters_Admin {
     }
     else {
       // Add new post
+      $status = 'published';
       $post_id = wp_insert_post($post_arr);
       $posts = array(get_post($post_id));
 
@@ -218,18 +233,45 @@ class IDX_SmartRecruiters_Admin {
       }
     }
 
+    // Set post taxonomy tag from SmartRecruiters job location
+    $taxonomy = 'job_categories';
+    $taxonomy_term = $meta_arr['idx_smartrecruiters_location_name'];
+    wp_set_post_terms($post_id, array($taxonomy_term), $taxonomy);
+
     // Send results back as json data
-    if (isset($job['id'])) wp_send_json_success($job);
-    else wp_send_json_error($job);
+    $job['link'] = get_permalink($post_id);
+    if (isset($job['id'])) wp_send_json_success(array('status' => $status, 'job' => $job));
+    else wp_send_json_error(array('status' => 'error', 'job' => $job));
+  }
+
+  public function trash_job() {
+    $post_id = 0;
+    $job_id = $_POST['id'];
+
+    // Check if posts with matching job id exist
+    $posts = get_posts(array(
+      'numberposts'   => 1,
+      'post_type'     => 'job',
+      'meta_key'      => 'idx_smartrecruiters_id',
+      'meta_value'    => $job_id
+    ));
+
+    if (count($posts) > 0) {
+      $post_id = $posts[0]->ID;
+      wp_trash_post($post_id);
+    }
+
+    // Send results back as json data
+    wp_send_json_success($post_id);
   }
 
   public function get_job_list() {
     // Get parameters with defaults
     $offset = intval($_POST['offset'] ?? 0);
-    $limit = intval($_POST['limit'] ?? 10);
+    $limit = intval($_POST['limit'] ?? 100);
     $updatedAfter = $_POST['updatedAfter'];
 
-    // Resolve Smartrecruiter limit (100)
+    // Resolve Smartrecruiters limit (100)
     if ($limit > 100) $limit = 100; 
 
     // Update query from parameters

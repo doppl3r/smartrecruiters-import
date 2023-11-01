@@ -14,16 +14,17 @@
   }
 
   // Check rewrite value
-  $default_slug = 'careers';
+  $default_slug = 'jobs';
   if (isset($_POST['rewrite'])) {
-    $rewrite = $_POST['rewrite'];
+    $rewrite = trim($_POST['rewrite'], '/');
     if (empty($rewrite)) $rewrite = $default_slug;
+    $rewrite = trim($rewrite, '/');
     update_option('smartrecruiters_rewrite', $rewrite);
     flush_rewrite_rules();
   }
   else {
     // Get stored rewrite rule
-    $rewrite = get_option('smartrecruiters_rewrite', 'careers');
+    $rewrite = get_option('smartrecruiters_rewrite', 'jobs');
     if (empty($rewrite)) $rewrite = $default_slug;
   }
 ?>
@@ -42,7 +43,7 @@
         <input id="client_secret" name="client_secret" value="<?php echo $client_secret; ?>" type="text">
       </div>
       <div class="row">
-        <label for="rewrite">Post Type Slug</label>
+        <label for="rewrite">Parent Slug (ex: jobs/search)</label>
         <input id="rewrite" name="rewrite" value="<?php echo $rewrite; ?>" type="text">
       </div>
       <div class="row">

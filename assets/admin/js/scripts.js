@@ -1,6 +1,7 @@
 // Global JS code
 jQuery(document).ready(function($) {
   var jobs = [];
+  var trash = [];
   var list = $('.idx-sr-list');
   var start; // Elapsed time
   var timer;
@@ -17,6 +18,7 @@ jQuery(document).ready(function($) {
       $('.idx-sr-btn[action]').addClass('disabled'); // Disable all buttons
       jobs = []; // Empty jobs array
       list.empty(); // Empty job HTML list
+      updateProgressBar(0, 1, 'Connecting to SmartRecruiters...');
       startTimer();
 
       // Check the button action
@@ -40,11 +42,13 @@ jQuery(document).ready(function($) {
         
         // Check if there are more jobs to search
         if (offset < total) {
+          console.log(data);
           data['content'].forEach(function(job) { addJobToList(job); });
-          updateProgressBar(offset + limit, total, 'Downloaded ' + (offset + limit) + ' of ' + total + ' jobs...');
+          updateProgressBar(offset + limit, total, 'Step 1 of 3: Downloading ' + (offset + limit) + ' of ' + total + ' jobs...');
           importJobs(offset + limit, limit, updatedAfter); // Recursively request more jobs
         }
         else {
+          // Finish and begin publishing
           updateProgressBar(0, jobs.length, 'Download complete!');
           publishJobs();
         }
@@ -72,10 +76,14 @@ jQuery(document).ready(function($) {
       jobs.push(job);
       addRowToList(job['id'], '<span class="idx-sr-status queued"></span>' + '(' + jobs.length + ') ' + job['title']);
     }
+    else {
+      // Add to list of jobs to remove from WP
+      trash.push(job);
+    }
   }
 
   function addRowToList(id, text) {
-    var row = '<div class="idx-sr-row" id="' + id + '">' + text + '</div>';
+    var row = '<a class="idx-sr-row" id="' + id + '">' + text + '</a>';
     list.prepend(row);
   }
 
@@ -84,23 +92,41 @@ jQuery(document).ready(function($) {
     if (index < jobs.length) {
       var id = jobs[index]['id'];
       $.post(ajaxurl, { action: 'publish_job', id: id }, function(response) { 
-        if (response.success == true) {
-          // Update the row status
-          var data = response['data'];
-          var row = $('#' + id);
-          row.find('.idx-sr-status').attr('class', 'idx-sr-status published');
-          console.log(data);
-          updateProgressBar(index + 1, jobs.length, 'Published ' + (index + 1) + ' of ' + jobs.length + ' job pages...');
-          publishJobs(index + 1); // Recurively request next job
+        // Update the row status
+        var data = response['data'];
+        var row = $('#' + id);
+        console.log(data);
+        if (data['status']) row.find('.idx-sr-status').attr('class', 'idx-sr-status ' + data['status']);
+        if (data['job']){
+          row.attr('href', data['job']['link']);
+          row.attr('target', '_blank');
         }
-        else {
-          // Log error
-          console.log(response);
-        }
+        updateProgressBar(index + 1, jobs.length, 'Step 2 of 3: Publishing ' + (index + 1) + ' of ' + jobs.length + ' job pages...');
+        publishJobs(index + 1); // Recursively request next job
       });
     }
     else {
-      // Update page to show completion
+      // Finish job publications and trash old jobs
+      updateProgressBar(0, 1, 'Cleaning up old jobs...');
+      trashJobs();
+    }
+  }
+
+  function trashJobs(index = 0) {
+    // Trash jobs from SmartRecruiters that are not available anymore.
+    if (index < trash.length) {
+      var id = trash[index]['id'];
+      $.post(ajaxurl, { action: 'trash_job', id: id }, function(response) {
+        // Update the row status
+        var data = response['data'];
+        console.log(data);
+        updateProgressBar(index + 1, trash.length, 'Step 3 of 3: Unpublishing ' + (index + 1) + ' of ' + trash.length + ' job pages...');
+        trashJobs(index + 1); // Recursively request next job to trash
+      });
+    }
+    else {
+      // Finished
+      updateProgressBar(0, 1, 'Finished!');
       $('.idx-sr-btn[action]').removeClass('disabled');
       stopTimer();
     }
