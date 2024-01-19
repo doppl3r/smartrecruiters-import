@@ -105,7 +105,8 @@ class IDX_SmartRecruiters_Admin {
         'callbackUrl' => $callback,
         'events' => [
           'job.created',
-          'job.updated'
+          'job.updated',
+          'job.status.updated'
         ]
       ]),
       CURLOPT_HTTPHEADER => array(
@@ -247,7 +248,7 @@ class IDX_SmartRecruiters_Admin {
 
     // Configure curl array
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://api.smartrecruiters.com/webhooks-api/v201907/subscriptions/' . $subscription_id . '/callbacks-log?limit=10',
+      CURLOPT_URL => 'https://api.smartrecruiters.com/webhooks-api/v201907/subscriptions/' . $subscription_id . '/callbacks-log?limit=100',
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,

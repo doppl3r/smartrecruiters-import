@@ -212,8 +212,8 @@ jQuery(document).ready(function($) {
     if (notifications.length > 0) {
       // Query webhook notifications from server
       notifications.addClass('loading');
-      notifications.empty();
       $.post(ajaxurl, { action: 'get_webhook_notifications' }, function(response) {
+        notifications.empty();
         notifications.removeClass('loading');
         Object.keys(response.data).forEach(function(key) {
           // Only get notifications with number key

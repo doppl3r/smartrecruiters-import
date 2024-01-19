@@ -104,6 +104,7 @@ class IDX_SmartRecruiters_Public {
   }
 
   public function run_webhook($request) {
+    // Assign header values as an array
     $header = $request->get_headers(wp_unslash($_SERVER));
     
     // Save results for testing
@@ -116,21 +117,36 @@ class IDX_SmartRecruiters_Public {
       header('X-Hook-Secret: ' . $secret);
     }
     
-    // Check if event name exists in header
-    $event = $header['event_name'][0];
+    
+    // Check if SmartRecruiter event is defined in header
+    if (isset($header['event_name'])) {
+      // Assign event name from header value
+      $event = $header['event_name'][0];
 
-    if (isset($event)) {
-      // Get job id from link
-      $link = $header['link'][0];
-      $link = str_replace('\/', '/', $link);
-      if (preg_match('/<(.*?)>/', $link, $match) == 1) { $link = $match[1]; }
-      $index = strrpos($link, '/');
-      $id = substr($link, $index + 1);
+      // Check if link key exists
+      if (isset($header['link'])) {
+        // Format json slashes to single slashes
+        $link = $header['link'][0];
+        $link = str_replace('\/', '/', $link);
 
-      if ($event == 'job.created' || $event == 'job.updated') {
+        // Remove '<' and anything after '>' from "<https://example.com>; rel=self"
+        if (preg_match('/<(.*?)>/', $link, $match) == 1) { $link = $match[1]; }
+
+        // Get job id from link
+        $offset = strpos($link, '/jobs/') + 6;
+        $id = substr($link, $offset);
+
+        // Remove extra routes if needed (ex: 'job.status.updated' includes '/status/history' at the end)
+        if (strpos($id, '/') > 0) {
+          $offset = strpos($id, '/');
+          $id = substr($id, 0, $offset);
+        }
+
         // Publish or update job page
-        $_POST['id'] = $id;
-        $this->idx_api->publish_job();
+        if ($event == 'job.created' || $event == 'job.updated' || $event == 'job.status.updated') {
+          $_POST['id'] = $id;
+          $this->idx_api->publish_job();
+        }
       }
     }
   }
@@ -142,7 +158,7 @@ class IDX_SmartRecruiters_Public {
           $ip = trim($ip);
 
           if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false){
-              return $ip;
+            return $ip;
           }
         }
       }
@@ -220,7 +236,6 @@ class IDX_SmartRecruiters_Public {
     }
 
     // Search by communities
-    // create list if akk communities
     foreach ($queryComunity->posts as $key => $post) {
       $community_name = get_post_meta($post->ID, 'idx_smartrecruiters_location_name', true);
       if (!empty($community_name)) $communities[$community_name] = $community_name; // Map community keys/values 
