@@ -37,16 +37,19 @@
             <div id="search-filters" class="idx-sr-filters">
                 <h3>Filters</h3>
                 <div class="group separate">
-                    <label for="idx-sr-department">Job Department</label>
+                    <label for="idx-sr-department">Job Category</label>
                     <select id="idx-sr-department" name="department">
                         <option value="all">All</option>
                     </select>
                 </div>
                 <div class="group separate">
-                    <label for="idx-sr-community">Community</label>
-                    <select id="idx-sr-community" name="community">
-                        <option value="all">All</option>
-                    </select>
+                    <span >Community</span>
+                    <div id="idx-sr-community" name="community">
+                        <div class="group">
+                            <input type="checkbox" id="All" name="All" value="all" checked>
+                            <label for="All">All</label>
+                        </div>
+                    </div>
                 </div>
                 <label>Type</label>
                 <div class="group">

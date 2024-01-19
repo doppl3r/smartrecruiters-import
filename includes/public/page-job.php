@@ -26,6 +26,9 @@
     $department_name = get_post_meta($post->ID, 'idx_smartrecruiters_department', true);
     $employment_type = get_post_meta($post->ID, 'idx_smartrecruiters_employment_type', true);
     $created_on = get_post_meta($post->ID, 'idx_smartrecruiters_created_on', true);
+    $latitude = get_post_meta($post->ID, 'idx_smartrecruiters_latitude', true);
+    $longitude = get_post_meta($post->ID, 'idx_smartrecruiters_longitude', true);
+    $directions = 'https://www.google.com/maps?saddr=My+Location&daddr=' . $address . ', ' . $city . ', ' .$region_code . ' ' . $zip . ', ' . $country;
     
     // Post type slug
     $default_slug = 'jobs';
@@ -49,6 +52,20 @@
       'post__not_in'    => array($post->ID) // Exclude current post
     ));
     $other_communities = $query->posts;
+
+    // Enqueue leaflet map scripts (required for the map)
+    wp_enqueue_script('leaflet');
+    wp_enqueue_style('leaflet');
+    wp_localize_script('leaflet', 'path', MY_PLUGIN_DIR);
+    wp_localize_script('leaflet', 'jobs',
+      array(
+        array(
+          'title'      => $title,
+          'geo'        => array($latitude, $longitude),
+          'directions' => $directions
+        )
+      )
+    );
 ?>
 
 <!-- Body content -->
@@ -62,7 +79,7 @@
             // Load community logo by community name (ex: "Park Creek Place North Wales.jpg")
             global $wpdb;
             $attachments = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE post_title = '$community' AND post_type = 'attachment' ", OBJECT );
-            if ($attachments) echo '<img class="idx-sr-logo" src="' . $attachments[0]->guid . '" alt="' . $community . '">';
+            if ($attachments) echo '<a href="/' . $slug . '/' . $terms_slug . '"><img class="idx-sr-logo" src="' . $attachments[0]->guid . '" alt="' . $community . '"></a>';
           ?>
           <h2><?php echo $title; ?></h2>
           <div class="idx-sr-details">
@@ -76,6 +93,11 @@
         <div class="col-md-8">
           <div class="idx-sr-content">
             <?php echo get_the_content(); ?>
+            <h3>Job Location</h3>
+            <div id="idx-sr-map" class="idx-sr-map"></div>
+            <p>
+              <a href="<?php echo $directions; ?>" target="_blank">Get Directions</a>
+            </p>
           </div>
         </div>
         <div class="col-md-4">
@@ -92,7 +114,6 @@
               <a class="fab fa-facebook" href="http://www.facebook.com/sharer/sharer.php?s=100&u=<?php echo get_permalink(); ?>" aria-label="Facebook" target="_blank"></a>
               <a class="fab fa-twitter" href="https://twitter.com/share?text=Senior%20Lifestyle%20is%20looking%20for%3A%20Assisted%20Living%20Attendant%2FCaregiver.&via=Senior Lifestyle&url=<?php echo get_permalink(); ?>" aria-label="Twitter" target="_blank"></a>
               <a class="fas fa-envelope" href="mailto:?&subject=<?php echo $title; ?>&body=<?php echo $description ?>" aria-label="Mail" target="_blank"></a>
-              <a class="fab fa-xing" href="https://www.xing.com/spi/shares/new?url=<?php echo get_permalink(); ?>" aria-label="Xing" target="_blank"></a>
             </div>
             <?php if (count($other_communities) > 0) : ?>
               <h3>Other Jobs at <?php echo $community; ?></h3>

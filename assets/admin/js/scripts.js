@@ -150,4 +150,105 @@ jQuery(document).ready(function($) {
   function stopTimer() {
     clearInterval(timer);
   }
+
+  // Add subscription row delete event
+  $(document).on('click', '.webhook-subscriptions .delete', function(e) {
+    e.preventDefault();
+    var button = $(this);
+    var row = button.closest('.subscription');
+    var subscriptions = $('.webhook-subscriptions');
+    var subscription_id = button.attr('data-id');
+    subscriptions.addClass('loading');
+    $.post(ajaxurl, { action: 'delete_webhook_subscription', id: subscription_id }, function(response) {
+      row.remove(); // Delete row if successful
+      subscriptions.removeClass('loading');
+    });
+  });
+
+  function get_webhook_subscriptions() {
+    var subscriptions = $('.webhook-subscriptions');
+    if (subscriptions.length > 0) {
+      // Query webhook subscriptions from server
+      $.post(ajaxurl, { action: 'get_webhook_subscriptions' }, function(response) {
+        subscriptions.removeClass('loading');
+        response.data.forEach(function(subscription) {
+          var row = render_subscription_row(subscription);
+          subscriptions.append(row);
+        });
+      });
+
+      // Add event "Add New" webhook subscription event
+      $(document).on('click', '.subscribe-to-webhook', function(e) {
+        e.preventDefault();
+        subscriptions.addClass('loading');
+        $.post(ajaxurl, { action: 'subscribe_to_webhook' }, function(response) {
+          var row = render_subscription_row(response.data);
+          subscriptions.removeClass('loading');
+          subscriptions.append(row)
+        });
+      });
+    }
+  }
+
+  function render_subscription_row(subscription) {
+    var row =
+    '<div class="subscription">' +
+      '<div class="id"><strong>subscription id: </strong>' + subscription['id'] + '</div>' +
+      '<div class="url"><strong>callbackUrl: </strong>' + subscription['callbackUrl'] + '</div>' +
+      '<div class="status"><strong>status: </strong>' + subscription['status'] + '</div>' +
+      '<a href="#" data-id="' + subscription['id'] + '" class="btn delete"><span class="dashicons-before dashicons-trash"></span></a>'
+    '<div>'
+    return row;
+  }
+
+  // Add event "Refresh" webhook notifications event
+  $(document).on('click', '.refresh-notifications', function(e) {
+    e.preventDefault();
+    get_webhook_notifications();
+  });
+
+  function get_webhook_notifications() {
+    var notifications = $('.webhook-notifications');
+    if (notifications.length > 0) {
+      // Query webhook notifications from server
+      notifications.addClass('loading');
+      notifications.empty();
+      $.post(ajaxurl, { action: 'get_webhook_notifications' }, function(response) {
+        notifications.removeClass('loading');
+        Object.keys(response.data).forEach(function(key) {
+          // Only get notifications with number key
+          if (isNaN(key) == false) {
+            var notification = response.data[key];
+            var row = render_notifications_row(notification);
+            if (row) notifications.append(row);
+          }
+        });
+      });
+    }
+  }
+
+  function render_notifications_row(notification) {
+    var timestamp = notification['timestamp'];
+    var status = notification['status'];
+    var headers = notification['requestDetails']['headers'];
+    var body = notification['requestDetails']['body'];
+    var event = headers['Event-name'];
+    var row;
+
+    if (body) {
+      var jobId = JSON.parse(body)['id'];
+      row =
+        '<div class="notification">' +
+          '<div class="id"><strong>job id: </strong>' + jobId + '</div>' +
+          '<div class="timestamp"><strong>timestamp: </strong>' + timestamp + '</div>' +
+          '<div class="event"><strong>event: </strong>' + event + '</div>' +
+          '<div class="status"><strong>status: </strong>' + status + '</div>' +
+        '<div>';
+    }
+    return row;
+  }
+
+  // Admin subscription page
+  get_webhook_subscriptions();
+  get_webhook_notifications();
 });

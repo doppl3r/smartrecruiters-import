@@ -42,8 +42,19 @@
   font-weight: bold;
 }
 
+.idx-sr-single .idx-sr-content p a {
+  text-decoration: underline;
+}
+
 .idx-sr-single .idx-sr-content p u {
   text-decoration: initial;
+}
+
+.idx-sr-single .idx-sr-map {
+  width: 100%;
+  height: 240px;
+  background-color: #f1f1f1;
+  margin-bottom: 12px;
 }
 
 .idx-sr-single .btn {
@@ -128,6 +139,11 @@
   margin-bottom: 30px;
 }
 
+#idx-sr-community{
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 .idx-sr-single .sidebar .idx-sr-other-communities {
   list-style: none;
   padding: 10px 0px 0px;
@@ -156,4 +172,24 @@
 
 .idx-sr-single .sidebar .search-link {
   text-decoration: underline;
+}
+
+/* Taxonomy page styling */
+.tax-job_categories #main {
+  padding: 60px 0px !important;
+}
+
+.tax-job_categories .type-job {
+  margin: 40px 0px;
+}
+
+.tax-job_categories .post-date {
+  display: none;
+}
+
+.tax-job_categories .type-job .excerpt-container p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

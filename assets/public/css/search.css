@@ -215,6 +215,7 @@
   width: 24px;
   height: 24px;
   position: absolute;
+  opacity: 0;
   left: 0;
   top: 0;
 }
@@ -271,9 +272,13 @@
   padding: 40px 0px;
 }
 
-.idx-sr-search .idx-sr-pagination span {
+.idx-sr-search .idx-sr-pagination span.label {
   margin-right: 12px;
   font-size: 14px;
+}
+
+.idx-sr-search .idx-sr-pagination span.separator {
+  margin: 0px 8px;
 }
 
 .idx-sr-search .idx-sr-pagination a {
