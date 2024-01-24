@@ -106,6 +106,7 @@ class IDX_SmartRecruiters_API {
     // Update post meta from SmartRecruiters data
     $meta_arr = array(
       'idx_smartrecruiters_id' => $job['id'],
+      'idx_smartrecruiters_status' => $job['status'], // Ex: SOURCING, CANCELLED etc.
       'idx_smartrecruiters_title' => $job['title'],
       'idx_smartrecruiters_country' => $job['location']['country'],
       'idx_smartrecruiters_country_code' => $job['location']['countryCode'],
@@ -141,15 +142,21 @@ class IDX_SmartRecruiters_API {
     ));
     
     if (count($posts) > 0) {
-      // Update existing post
-      $status = 'updated';
-      $post_id = $posts[0]->ID;
-      $post_arr['ID'] = $post_id;
-      wp_update_post($post_arr);
-      
-      // Update each post meta
-      foreach ($meta_arr as $key => $meta) {
-        update_post_meta($post_id, $key, $meta);
+      // Trash existing job page if job status is "CANCELLED"
+      if ($job['status'] == 'CANCELLED') {
+        wp_trash_post($posts[0]->ID);
+      }
+      else {
+        // Update existing post
+        $status = 'updated';
+        $post_id = $posts[0]->ID;
+        $post_arr['ID'] = $post_id;
+        wp_update_post($post_arr);
+        
+        // Update each post meta
+        foreach ($meta_arr as $key => $meta) {
+          update_post_meta($post_id, $key, $meta);
+        }
       }
     }
     else {

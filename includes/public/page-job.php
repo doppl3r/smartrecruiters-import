@@ -2,70 +2,71 @@
 <?php get_header(); ?>
 
 <?php
-    // Get post content
-    global $post;
+  // Get post content
+  global $post;
 
-    // Set variables from post/meta
-    $id = get_post_meta($post->ID, 'idx_smartrecruiters_id', true);
-    $title = get_the_title();
-    $description = mb_strimwidth($post->post_excerpt, 0, 120, '...');
-    $address = get_post_meta($post->ID, 'idx_smartrecruiters_address', true);
-    $city = get_post_meta($post->ID, 'idx_smartrecruiters_city', true);
-    $region_code = get_post_meta($post->ID, 'idx_smartrecruiters_region_code', true);
-    $zip = get_post_meta($post->ID, 'idx_smartrecruiters_postal_code', true);
-    $country = get_post_meta($post->ID, 'idx_smartrecruiters_country', true);
-    $country_code = get_post_meta($post->ID, 'idx_smartrecruiters_country_code', true);
-    $community = get_post_meta($post->ID, 'idx_smartrecruiters_location_name', true);
-    $employment = get_post_meta($post->ID, 'idx_smartrecruiters_full_part_time', true);
-    $hourly_min = get_post_meta($post->ID, 'idx_smartrecruiters_hourly_rate_minimum', true);
-    $hourly_max = get_post_meta($post->ID, 'idx_smartrecruiters_hourly_rate_maximum', true);
-    if (!empty($hourly_min) && empty($hourly_max)) $hourly = $hourly_min;
-    else if (empty($hourly_min) && !empty($hourly_max)) $hourly = $hourly_max;
-    else if (!empty($hourly_min) && !empty($hourly_max)) $hourly = $hourly_min . ' - ' . $hourly_max;
-    else $hourly = 'n/a';
-    $department_name = get_post_meta($post->ID, 'idx_smartrecruiters_department', true);
-    $employment_type = get_post_meta($post->ID, 'idx_smartrecruiters_employment_type', true);
-    $created_on = get_post_meta($post->ID, 'idx_smartrecruiters_created_on', true);
-    $latitude = get_post_meta($post->ID, 'idx_smartrecruiters_latitude', true);
-    $longitude = get_post_meta($post->ID, 'idx_smartrecruiters_longitude', true);
-    $directions = 'https://www.google.com/maps?saddr=My+Location&daddr=' . $address . ', ' . $city . ', ' .$region_code . ' ' . $zip . ', ' . $country;
-    
-    // Post type slug
-    $default_slug = 'jobs';
-		$slug = get_option('smartrecruiters_rewrite', $default_slug); // Option: 'jobs/search'
-		$slug = empty($slug) ? $default_slug : $slug;
+  // Set variables from post/meta
+  $id = get_post_meta($post->ID, 'idx_smartrecruiters_id', true);
+  $title = get_the_title();
+  $description = mb_strimwidth($post->post_excerpt, 0, 120, '...');
+  $address = get_post_meta($post->ID, 'idx_smartrecruiters_address', true);
+  $city = get_post_meta($post->ID, 'idx_smartrecruiters_city', true);
+  $region_code = get_post_meta($post->ID, 'idx_smartrecruiters_region_code', true);
+  $zip = get_post_meta($post->ID, 'idx_smartrecruiters_postal_code', true);
+  $country = get_post_meta($post->ID, 'idx_smartrecruiters_country', true);
+  $country_code = get_post_meta($post->ID, 'idx_smartrecruiters_country_code', true);
+  $community = get_post_meta($post->ID, 'idx_smartrecruiters_location_name', true);
+  $employment = get_post_meta($post->ID, 'idx_smartrecruiters_full_part_time', true);
+  $hourly_min = get_post_meta($post->ID, 'idx_smartrecruiters_hourly_rate_minimum', true);
+  $hourly_max = get_post_meta($post->ID, 'idx_smartrecruiters_hourly_rate_maximum', true);
+  if (!empty($hourly_min) && empty($hourly_max)) $hourly = $hourly_min;
+  else if (empty($hourly_min) && !empty($hourly_max)) $hourly = $hourly_max;
+  else if (!empty($hourly_min) && !empty($hourly_max)) $hourly = $hourly_min . ' - ' . $hourly_max;
+  else $hourly = 'n/a';
+  $department_name = get_post_meta($post->ID, 'idx_smartrecruiters_department', true);
+  $employment_type = get_post_meta($post->ID, 'idx_smartrecruiters_employment_type', true);
+  $created_on = get_post_meta($post->ID, 'idx_smartrecruiters_created_on', true);
+  $latitude = get_post_meta($post->ID, 'idx_smartrecruiters_latitude', true);
+  $longitude = get_post_meta($post->ID, 'idx_smartrecruiters_longitude', true);
+  $directions = 'https://www.google.com/maps?saddr=My+Location&daddr=' . $address . ', ' . $city . ', ' .$region_code . ' ' . $zip . ', ' . $country;
+  $apply_url = get_post_meta($post->ID, 'idx_smartrecruiters_apply', true);
+  
+  // Post type slug
+  $default_slug = 'jobs';
+  $slug = get_option('smartrecruiters_rewrite', $default_slug); // Option: 'jobs/search'
+  $slug = empty($slug) ? $default_slug : $slug;
 
-    // Taxonomy terms
-    $terms =  get_the_terms($post->ID, 'job_categories');
-    $terms_slug = '';
-    foreach ($terms as $term) {
-      $terms_slug .= $term->slug . '/';
-    }
+  // Taxonomy terms
+  $terms =  get_the_terms($post->ID, 'job_categories');
+  $terms_slug = '';
+  foreach ($terms as $term) {
+    $terms_slug .= $term->slug . '/';
+  }
 
-    // Get a list of other communities
-    $query = new WP_Query(array(
-      'posts_per_page'  => 3,
-      'post_type'       => 'job',
-      'meta_key'        => 'idx_smartrecruiters_location_name',
-      'meta_value'      => $community,
-      'orderby'         => 'rand',
-      'post__not_in'    => array($post->ID) // Exclude current post
-    ));
-    $other_communities = $query->posts;
+  // Get a list of other communities
+  $query = new WP_Query(array(
+    'posts_per_page'  => 3,
+    'post_type'       => 'job',
+    'meta_key'        => 'idx_smartrecruiters_location_name',
+    'meta_value'      => $community,
+    'orderby'         => 'rand',
+    'post__not_in'    => array($post->ID) // Exclude current post
+  ));
+  $other_communities = $query->posts;
 
-    // Enqueue leaflet map scripts (required for the map)
-    wp_enqueue_script('leaflet');
-    wp_enqueue_style('leaflet');
-    wp_localize_script('leaflet', 'path', MY_PLUGIN_DIR);
-    wp_localize_script('leaflet', 'jobs',
+  // Enqueue leaflet map scripts (required for the map)
+  wp_enqueue_script('leaflet');
+  wp_enqueue_style('leaflet');
+  wp_localize_script('leaflet', 'path', MY_PLUGIN_DIR);
+  wp_localize_script('leaflet', 'jobs',
+    array(
       array(
-        array(
-          'title'      => $title,
-          'geo'        => array($latitude, $longitude),
-          'directions' => $directions
-        )
+        'title'      => $title,
+        'geo'        => array($latitude, $longitude),
+        'directions' => $directions
       )
-    );
+    )
+  );
 ?>
 
 <!-- Body content -->
@@ -98,6 +99,20 @@
             <p>
               <a href="<?php echo $directions; ?>" target="_blank">Get Directions</a>
             </p>
+            <?php
+              // List all post meta for debugging
+              if (is_user_logged_in()) {
+                echo '<strong style="margin-bottom: 16px;">Debugger (only visible to admin users)</strong>';
+                echo '<ul style="overflow-y: auto; max-height: 240px; background-color: #f1f1f1; list-style: none; padding: 12px;">';
+                $meta = get_post_meta($post->ID);
+                foreach($meta as $key => $value) {
+                  if (str_contains($key, 'idx_')) {
+                    echo '<li style="margin: 0;">' . $key . ': ' . $value[0] . '</li>';
+                  }
+                }
+                echo '</ul>';
+              }
+            ?>
           </div>
         </div>
         <div class="col-md-4">
@@ -105,7 +120,7 @@
             <h3>Get Started</h3>
             <p>Your job is just around the corner!</p>
             <div class="actions">
-              <a class="btn btn-primary" href="<?php echo get_post_meta($post->ID, 'idx_smartrecruiters_apply', true); ?>" target="_blank">Apply Now</a>
+              <a class="btn btn-primary" href="<?php echo $apply_url; ?>" target="_blank">Apply Now</a>
               <a class="btn" href="#" target="_blank">Refer a Friend</a>
             </div>
             <h3>Share This Job</h3>
