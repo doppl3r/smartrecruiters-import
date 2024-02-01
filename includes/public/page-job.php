@@ -99,6 +99,7 @@
             <p>
               <a href="<?php echo $directions; ?>" target="_blank">Get Directions</a>
             </p>
+            <p style="color: #eeeeee"><em><?php echo 'SmartRecruiters Job ID: ' . $id; ?></em></p>
             <?php
               // List all post meta for debugging
               if (is_user_logged_in()) {

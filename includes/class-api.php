@@ -107,6 +107,7 @@ class IDX_SmartRecruiters_API {
     $meta_arr = array(
       'idx_smartrecruiters_id' => $job['id'],
       'idx_smartrecruiters_status' => $job['status'], // Ex: SOURCING, CANCELLED etc.
+      'idx_smartrecruiters_posting_status' => $job['postingStatus'], // Ex: PUBLIC, NOT_PUBLISHED etc.
       'idx_smartrecruiters_title' => $job['title'],
       'idx_smartrecruiters_country' => $job['location']['country'],
       'idx_smartrecruiters_country_code' => $job['location']['countryCode'],
@@ -141,9 +142,10 @@ class IDX_SmartRecruiters_API {
       'meta_value'    => $_POST['id']
     ));
     
+    // Check if job page exists
     if (count($posts) > 0) {
-      // Trash existing job page if job status is "CANCELLED"
-      if ($job['status'] == 'CANCELLED') {
+      // Trash existing job page if job status is not "PUBLIC"
+      if (!empty($job['postingStatus']) && $job['postingStatus'] != 'PUBLIC') {
         wp_trash_post($posts[0]->ID);
       }
       else {
@@ -160,14 +162,17 @@ class IDX_SmartRecruiters_API {
       }
     }
     else {
-      // Add new post
-      $status = 'published';
-      $post_id = wp_insert_post($post_arr);
-      $posts = array(get_post($post_id));
-
-      // Add each post meta
-      foreach ($meta_arr as $key => $meta) {
-        add_post_meta($post_id, $key, $meta);
+      // Add new post if title is not empty
+      if (!empty($job['title'])) {
+        // Insert post and update status
+        $status = 'published';
+        $post_id = wp_insert_post($post_arr);
+        $posts = array(get_post($post_id));
+  
+        // Add each post meta
+        foreach ($meta_arr as $key => $meta) {
+          add_post_meta($post_id, $key, $meta);
+        }
       }
     }
 

@@ -117,7 +117,6 @@ class IDX_SmartRecruiters_Public {
       header('X-Hook-Secret: ' . $secret);
     }
     
-    
     // Check if SmartRecruiter event is defined in header
     if (isset($header['event_name'])) {
       // Assign event name from header value

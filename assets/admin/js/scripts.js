@@ -71,8 +71,8 @@ jQuery(document).ready(function($) {
   }
 
   function addJobToList(job) {
-    // Only add jobs with 'PUBLIC' or 'INTERNAL' posting status
-    if (job['postingStatus'] == 'PUBLIC' || job['postingStatus'] == 'INTERNAL') {
+    // Only add jobs with 'PUBLIC' posting status
+    if (job['postingStatus'] == 'PUBLIC') {
       jobs.push(job);
       addRowToList(job['id'], '<span class="idx-sr-status queued"></span>' + '(' + jobs.length + ') ' + job['title']);
     }
