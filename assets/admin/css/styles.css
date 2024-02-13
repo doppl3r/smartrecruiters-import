@@ -329,6 +329,7 @@
 .idx-sr-admin .idx-sr-results .idx-sr-status.queued { background-color: #cccccc; }
 .idx-sr-admin .idx-sr-results .idx-sr-status.published { background-color: #1ed760; }
 .idx-sr-admin .idx-sr-results .idx-sr-status.updated { background-color: #2271b1; }
+.idx-sr-admin .idx-sr-results .idx-sr-status.trashed { background-color: #ffab09; }
 .idx-sr-admin .idx-sr-results .idx-sr-status.error { background-color: #d63638; }
 
 .idx-sr-admin .idx-sr-results .idx-sr-legend {

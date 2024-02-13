@@ -38,6 +38,12 @@ jQuery(document).ready(function($) {
           addJobToList({ id: id, title: id }, true);
           publishJobs();
         }
+        else {
+          // Notify incorrect input value
+          updateProgressBar(0, 1, 'Error! Please enter an existing Job ID');
+          $('.idx-sr-btn[action]').removeClass('disabled');
+          stopTimer();
+        }
       }
     }
   });

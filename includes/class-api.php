@@ -138,17 +138,15 @@ class IDX_SmartRecruiters_API {
     $posts = get_posts(array(
       'numberposts'   => 1,
       'post_type'     => 'job',
+      'post_status'   => array('publish', 'trash'), // Query published or trashed posts
       'meta_key'      => 'idx_smartrecruiters_id',
       'meta_value'    => $_POST['id']
     ));
-    
+
     // Check if job page exists
     if (count($posts) > 0) {
-      // Trash existing job page if job status is not "PUBLIC"
-      if (!empty($job['postingStatus']) && $job['postingStatus'] != 'PUBLIC') {
-        $this->trash_job($posts[0]->ID);
-      }
-      else {
+      // Update existing job post if postingStatus is "PUBLIC"
+      if ($job['postingStatus'] == 'PUBLIC') {
         // Update existing post
         $status = 'updated';
         $post_id = $posts[0]->ID;
@@ -159,6 +157,10 @@ class IDX_SmartRecruiters_API {
         foreach ($meta_arr as $key => $meta) {
           update_post_meta($post_id, $key, $meta);
         }
+      }
+      else {
+        // Trash job if postingStatus is not "PUBLIC"
+        $this->trash_job();
       }
     }
     else {
@@ -187,11 +189,10 @@ class IDX_SmartRecruiters_API {
     else wp_send_json_error(array('status' => 'error', 'job' => $job));
   }
 
-  public function trash_job($id) {
+  public function trash_job() {
     $post_id = 0;
-    if (isset($id)) $job_id = $id;
-    else $job_id = $_POST['id'];
-
+    $job_id = $_POST['id'];
+    
     // Check if posts with matching job id exist
     $posts = get_posts(array(
       'numberposts'   => 1,
@@ -206,7 +207,13 @@ class IDX_SmartRecruiters_API {
     }
 
     // Send results back as json data
-    wp_send_json_success($post_id);
+    wp_send_json_success(array(
+      'status' => 'trashed',
+      'job' => array(
+        'id' => $job_id,
+        'link' => get_permalink($post_id)
+      )
+    ));
   }
 
   public function get_job_list() {

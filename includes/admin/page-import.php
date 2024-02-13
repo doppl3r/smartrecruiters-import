@@ -35,6 +35,7 @@
         <label><span class="idx-sr-status queued"></span> Queued</label>
         <label><span class="idx-sr-status published"></span> Published</label>
         <label><span class="idx-sr-status updated"></span> Updated</label>
+        <label><span class="idx-sr-status trashed"></span> Trashed</label>
         <label><span class="idx-sr-status error"></span> Error</label>
       </div>
       <div class="idx-sr-list"></div>
