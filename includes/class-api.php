@@ -146,7 +146,7 @@ class IDX_SmartRecruiters_API {
     if (count($posts) > 0) {
       // Trash existing job page if job status is not "PUBLIC"
       if (!empty($job['postingStatus']) && $job['postingStatus'] != 'PUBLIC') {
-        wp_trash_post($posts[0]->ID);
+        $this->trash_job($posts[0]->ID);
       }
       else {
         // Update existing post
@@ -187,9 +187,10 @@ class IDX_SmartRecruiters_API {
     else wp_send_json_error(array('status' => 'error', 'job' => $job));
   }
 
-  public function trash_job() {
+  public function trash_job($id) {
     $post_id = 0;
-    $job_id = $_POST['id'];
+    if (isset($id)) $job_id = $id;
+    else $job_id = $_POST['id'];
 
     // Check if posts with matching job id exist
     $posts = get_posts(array(

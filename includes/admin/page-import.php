@@ -16,6 +16,7 @@
       <?php else : ?>
         <a class="idx-sr-btn ready" action="import-all" data-tip="Import all jobs">Import All <span class="dashicons-before dashicons-database"></span></a>
         <a class="idx-sr-btn ready" action="import-recent" data-tip="Import jobs that were updated within the last week (faster)">Import Recent <span class="dashicons-before dashicons-clock"></span></a>
+        <a class="idx-sr-btn ready" action="import-single" data-tip="Import a single job">Import Single<span class="dashicons-before dashicons-location"></span></a>
         <span class="idx-sr-time">00:00:00</span>
       <?php endif ?>
     </div>

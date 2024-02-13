@@ -17,6 +17,7 @@ jQuery(document).ready(function($) {
     if (button.hasClass('disabled') == false) {
       $('.idx-sr-btn[action]').addClass('disabled'); // Disable all buttons
       jobs = []; // Empty jobs array
+      trash = []; // Empty trash array
       list.empty(); // Empty job HTML list
       updateProgressBar(0, 1, 'Connecting to SmartRecruiters...');
       startTimer();
@@ -30,6 +31,13 @@ jQuery(document).ready(function($) {
         //date.setMonth(date.getMonth() - 1); // Last month
         date.setDate(date.getDate() - 7); // Last week
         importJobs(0, 100, date.toISOString());
+      }
+      else if (action == 'import-single') {
+        var id = prompt('Enter Job ID:');
+        if (id) {
+          addJobToList({ id: id, title: id }, true);
+          publishJobs();
+        }
       }
     }
   });
@@ -70,9 +78,9 @@ jQuery(document).ready(function($) {
     bar.width(percent + '%');
   }
 
-  function addJobToList(job) {
+  function addJobToList(job, force = false) {
     // Only add jobs with 'PUBLIC' posting status
-    if (job['postingStatus'] == 'PUBLIC') {
+    if (job['postingStatus'] == 'PUBLIC' || force == true) {
       jobs.push(job);
       addRowToList(job['id'], '<span class="idx-sr-status queued"></span>' + '(' + jobs.length + ') ' + job['title']);
     }
