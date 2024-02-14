@@ -143,10 +143,24 @@ class IDX_SmartRecruiters_API {
       'meta_value'    => $_POST['id']
     ));
 
-    // Check if job page exists
-    if (count($posts) > 0) {
-      // Update existing job post if postingStatus is "PUBLIC"
-      if ($job['postingStatus'] == 'PUBLIC') {
+    // Add or update existing post if postingStatus is "PUBLIC"
+    if ($job['postingStatus'] == 'PUBLIC') {
+      // Check is post exists
+      if (count($posts) == 0) {
+        // Add new post if title is not empty
+        if (!empty($job['title'])) {
+          // Insert post and update status
+          $status = 'published';
+          $post_id = wp_insert_post($post_arr);
+          $posts = array(get_post($post_id));
+    
+          // Add each post meta
+          foreach ($meta_arr as $key => $meta) {
+            add_post_meta($post_id, $key, $meta);
+          }
+        }
+      }
+      else {
         // Update existing post
         $status = 'updated';
         $post_id = $posts[0]->ID;
@@ -158,24 +172,10 @@ class IDX_SmartRecruiters_API {
           update_post_meta($post_id, $key, $meta);
         }
       }
-      else {
-        // Trash job if postingStatus is not "PUBLIC"
-        $this->trash_job();
-      }
     }
     else {
-      // Add new post if title is not empty
-      if (!empty($job['title'])) {
-        // Insert post and update status
-        $status = 'published';
-        $post_id = wp_insert_post($post_arr);
-        $posts = array(get_post($post_id));
-  
-        // Add each post meta
-        foreach ($meta_arr as $key => $meta) {
-          add_post_meta($post_id, $key, $meta);
-        }
-      }
+      // Trash job post if postingStatus is not "PUBLIC"
+      $this->trash_job();
     }
 
     // Set post taxonomy tag from SmartRecruiters job location
@@ -197,10 +197,12 @@ class IDX_SmartRecruiters_API {
     $posts = get_posts(array(
       'numberposts'   => 1,
       'post_type'     => 'job',
+      'post_status'   => array('publish'), // Only query 'public' posts
       'meta_key'      => 'idx_smartrecruiters_id',
       'meta_value'    => $job_id
     ));
 
+    // Safely check if post exists before trashing
     if (count($posts) > 0) {
       $post_id = $posts[0]->ID;
       wp_trash_post($post_id);

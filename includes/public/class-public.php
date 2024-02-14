@@ -108,7 +108,7 @@ class IDX_SmartRecruiters_Public {
     $header = $request->get_headers(wp_unslash($_SERVER));
     
     // Save results for testing
-    file_put_contents(wp_upload_dir()['basedir'] . '/sr-logs/smartrecruiters-webhook.txt', json_encode($header));
+    //file_put_contents(wp_upload_dir()['basedir'] . '/smartrecruiters-webhook.txt', json_encode($header));
 
     // Return secret to active subscription
     if (isset($header['x_hook_secret'])) {
