@@ -143,38 +143,36 @@ class IDX_SmartRecruiters_API {
       'meta_value'    => $_POST['id']
     ));
 
-    // Add or update existing post if postingStatus is "PUBLIC"
-    if ($job['postingStatus'] == 'PUBLIC') {
-      // Check is post exists
-      if (count($posts) == 0) {
-        // Add new post if title is not empty
-        if (!empty($job['title'])) {
-          // Insert post and update status
-          $status = 'published';
-          $post_id = wp_insert_post($post_arr);
-          $posts = array(get_post($post_id));
-    
-          // Add each post meta
-          foreach ($meta_arr as $key => $meta) {
-            add_post_meta($post_id, $key, $meta);
-          }
-        }
-      }
-      else {
-        // Update existing post
-        $status = 'updated';
-        $post_id = $posts[0]->ID;
-        $post_arr['ID'] = $post_id;
-        wp_update_post($post_arr);
-        
-        // Update each post meta
+    // Add job if it does not exist
+    if (count($posts) == 0) {
+      // Add new post if title is not empty
+      if (!empty($job['title'])) {
+        // Insert post and update status
+        $status = 'published';
+        $post_id = wp_insert_post($post_arr);
+        $posts = array(get_post($post_id));
+  
+        // Add each post meta
         foreach ($meta_arr as $key => $meta) {
-          update_post_meta($post_id, $key, $meta);
+          add_post_meta($post_id, $key, $meta);
         }
       }
     }
     else {
-      // Trash job post if postingStatus is not "PUBLIC"
+      // Update existing post
+      $status = 'updated';
+      $post_id = $posts[0]->ID;
+      $post_arr['ID'] = $post_id;
+      wp_update_post($post_arr);
+      
+      // Update each post meta
+      foreach ($meta_arr as $key => $meta) {
+        update_post_meta($post_id, $key, $meta);
+      }
+    }
+
+    // Trash job post if postingStatus is not "PUBLIC"
+    if ($job['postingStatus'] != 'PUBLIC') {
       $this->trash_job();
     }
 
