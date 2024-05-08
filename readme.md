@@ -1,6 +1,6 @@
-# IDX SmartRecruiters WordPress Plugin
+# SmartRecruiters WordPress Plugin
 
-The IDX SmartRecruiters plugin includes the following features:
+The SmartRecruiters plugin includes the following features:
 
 - Automatically import jobs from SmartRecruiters into WordPress pages using the SmartRecruiters Webhook API
 - Manually import jobs from SmartRecruiters' into WordPress job pages using the SmartRecruiters Job API
@@ -20,4 +20,4 @@ Your custom app must include the following scope:
 - webhooks_read
 - webhooks_write
 
-Please copy the **Client ID** and **Client Secret** into a safe place after creating the new credentials. You will need to paste these into the IDX Smartrecruiters WordPress settings page (www.example.com/wp-admin/admin.php?page=idx-smartrecruiters-settings)
+Please copy the **Client ID** and **Client Secret** into a safe place after creating the new credentials. You will need to paste these into the Smartrecruiters WordPress settings page (www.example.com/wp-admin/admin.php?page=smartrecruiters-settings)

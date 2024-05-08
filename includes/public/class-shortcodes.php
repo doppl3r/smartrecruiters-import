@@ -1,5 +1,5 @@
 <?php
-    class IDX_SmartRecruiters_Shortcodes {
+    class SmartRecruiters_Shortcodes {
         public function __construct() {
             add_action('init', array($this, 'add_shortcodes'));
         }

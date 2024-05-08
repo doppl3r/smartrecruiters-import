@@ -1,4 +1,4 @@
-<div class="idx-sr-breadcrumbs">
+<div class="sr-breadcrumbs">
   <?php
     // Breadcrumbs
     global $post;

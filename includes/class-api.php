@@ -1,6 +1,6 @@
 <?php
 
-class IDX_SmartRecruiters_API {
+class SmartRecruiters_API {
   public function __construct() {
 
   }
@@ -105,25 +105,25 @@ class IDX_SmartRecruiters_API {
 
     // Update post meta from SmartRecruiters data
     $meta_arr = array(
-      'idx_smartrecruiters_id' => $job['id'],
-      'idx_smartrecruiters_status' => $job['status'], // Ex: SOURCING, CANCELLED etc.
-      'idx_smartrecruiters_posting_status' => $job['postingStatus'], // Ex: PUBLIC, NOT_PUBLISHED etc.
-      'idx_smartrecruiters_title' => $job['title'],
-      'idx_smartrecruiters_country' => $job['location']['country'],
-      'idx_smartrecruiters_country_code' => $job['location']['countryCode'],
-      'idx_smartrecruiters_city' => $job['location']['city'],
-      'idx_smartrecruiters_region' => $job['location']['region'],
-      'idx_smartrecruiters_region_code' => $job['location']['regionCode'],
-      'idx_smartrecruiters_postal_code' => $job['location']['postalCode'],
-      'idx_smartrecruiters_address' => $job['location']['address'],
-      'idx_smartrecruiters_latitude' => $job['location']['latitude'],
-      'idx_smartrecruiters_longitude' => $job['location']['longitude'],
-      'idx_smartrecruiters_apply' => $job['actions']['applyOnWeb']['url'],
-      'idx_smartrecruiters_department' => $job['department']['label'],
-      'idx_smartrecruiters_industry' => $job['industry']['label'],
-      'idx_smartrecruiters_employment_type' => $job['typeOfEmployment']['label'],
-      'idx_smartrecruiters_experience_level' => $job['experienceLevel']['label'],
-      'idx_smartrecruiters_created_on' => $job['createdOn'],
+      'smartrecruiters_id' => $job['id'],
+      'smartrecruiters_status' => $job['status'], // Ex: SOURCING, CANCELLED etc.
+      'smartrecruiters_posting_status' => $job['postingStatus'], // Ex: PUBLIC, NOT_PUBLISHED etc.
+      'smartrecruiters_title' => $job['title'],
+      'smartrecruiters_country' => $job['location']['country'],
+      'smartrecruiters_country_code' => $job['location']['countryCode'],
+      'smartrecruiters_city' => $job['location']['city'],
+      'smartrecruiters_region' => $job['location']['region'],
+      'smartrecruiters_region_code' => $job['location']['regionCode'],
+      'smartrecruiters_postal_code' => $job['location']['postalCode'],
+      'smartrecruiters_address' => $job['location']['address'],
+      'smartrecruiters_latitude' => $job['location']['latitude'],
+      'smartrecruiters_longitude' => $job['location']['longitude'],
+      'smartrecruiters_apply' => $job['actions']['applyOnWeb']['url'],
+      'smartrecruiters_department' => $job['department']['label'],
+      'smartrecruiters_industry' => $job['industry']['label'],
+      'smartrecruiters_employment_type' => $job['typeOfEmployment']['label'],
+      'smartrecruiters_experience_level' => $job['experienceLevel']['label'],
+      'smartrecruiters_created_on' => $job['createdOn'],
     );
 
     // Convert Smartrecruiters 'properties' array into post meta
@@ -131,7 +131,7 @@ class IDX_SmartRecruiters_API {
       $key = preg_replace('/[^a-zA-Z0-9]+/', '_', $property['label']);
       $key = strtolower($key);
       $key = trim($key, '_');
-      $meta_arr['idx_smartrecruiters_' . $key] = $property['value']['label']; 
+      $meta_arr['smartrecruiters_' . $key] = $property['value']['label']; 
     }
 
     // Check if posts with matching job id exist
@@ -139,7 +139,7 @@ class IDX_SmartRecruiters_API {
       'numberposts'   => 1,
       'post_type'     => 'job',
       'post_status'   => array('publish', 'trash'), // Query published or trashed posts
-      'meta_key'      => 'idx_smartrecruiters_id',
+      'meta_key'      => 'smartrecruiters_id',
       'meta_value'    => $_POST['id']
     ));
 
@@ -178,7 +178,7 @@ class IDX_SmartRecruiters_API {
 
     // Set post taxonomy tag from SmartRecruiters job location
     $taxonomy = 'job_categories';
-    $taxonomy_term = $meta_arr['idx_smartrecruiters_location_name'];
+    $taxonomy_term = $meta_arr['smartrecruiters_location_name'];
     wp_set_post_terms($post_id, array($taxonomy_term), $taxonomy);
 
     // Send results back as json data
@@ -196,7 +196,7 @@ class IDX_SmartRecruiters_API {
       'numberposts'   => 1,
       'post_type'     => 'job',
       'post_status'   => array('publish'), // Only query 'public' posts
-      'meta_key'      => 'idx_smartrecruiters_id',
+      'meta_key'      => 'smartrecruiters_id',
       'meta_value'    => $job_id
     ));
 

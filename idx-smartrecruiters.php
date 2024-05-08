@@ -2,14 +2,14 @@
 
 /**
  * @wordpress-plugin
- * Plugin Name:       IDX SmartRecruiters
+ * Plugin Name:       SmartRecruiters WordPress Plugin
  * Description:       Import and manage job postings from SmartRecruiters
  * Version:           1.0.0
- * Author:            IDX (Investis Digital)
+ * Author:            Jacob DeBenedetto
  * Author URI:        https://www.investisdigital.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       idx-smartrecruiters
+ * Text Domain:       smartrecruiters
  * Domain Path:       /languages
  */
 
@@ -20,27 +20,27 @@ if ( ! defined( 'WPINC' ) ) { die; }
 define('MY_PLUGIN_DIR', plugin_dir_url(__FILE__));
 
 // Add optional plugin behavior
-function activate_idx_smartrecruiters() {}
-function deactivate_idx_smartrecruiters() {}
-function uninstall_idx_smartrecruiters() {}
+function activate_smartrecruiters() {}
+function deactivate_smartrecruiters() {}
+function uninstall_smartrecruiters() {}
 
 // Use core activation/deactivation hooks
-register_activation_hook(__FILE__, 'activate_idx_smartrecruiters');
-register_deactivation_hook(__FILE__, 'deactivate_idx_smartrecruiters');
-register_uninstall_hook(__FILE__, 'uninstall_idx_smartrecruiters');
+register_activation_hook(__FILE__, 'activate_smartrecruiters');
+register_deactivation_hook(__FILE__, 'deactivate_smartrecruiters');
+register_uninstall_hook(__FILE__, 'uninstall_smartrecruiters');
 
 // Evaluate the main file and include classes
 require_once 'includes/class-plugin.php';
 
 // Run the plugin
-function run_idx_smartrecruiters() {
+function run_smartrecruiters() {
   // Make available for other classes
-  global $idx_smartrecruiters_plugin;
+  global $smartrecruiters_plugin;
 
   // Init plugin class
-  $idx_smartrecruiters_plugin = new IDX_SmartRecruiters_Plugin();
-  $idx_smartrecruiters_plugin->run();
+  $smartrecruiters_plugin = new SmartRecruiters_Plugin();
+  $smartrecruiters_plugin->run();
 }
 
 // Call the plugin
-run_idx_smartrecruiters();
+run_smartrecruiters();

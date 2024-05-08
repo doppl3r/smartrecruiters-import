@@ -1,16 +1,16 @@
 <?php
 
-class IDX_SmartRecruiters_Plugin {
+class SmartRecruiters_Plugin {
 	protected $admin;
 
 	public function __construct() {
 		// Initialize admin class
 		require_once 'admin/class-admin.php';
-		$admin = new IDX_SmartRecruiters_Admin();
+		$admin = new SmartRecruiters_Admin();
 		
 		// Initialize public class
 		require_once 'public/class-public.php';
-		$public = new IDX_SmartRecruiters_Public();
+		$public = new SmartRecruiters_Public();
 	}
 
 	public function run() {

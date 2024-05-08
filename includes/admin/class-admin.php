@@ -1,20 +1,20 @@
 <?php
 
-class IDX_SmartRecruiters_Admin {
-  protected $idx_api;
+class SmartRecruiters_Admin {
+  protected $api;
 
   public function __construct() {
     // Require API class helper
 		require_once __DIR__ . '/../class-api.php';
-		$this->idx_api = new IDX_SmartRecruiters_API();
+		$this->api = new SmartRecruiters_API();
 
     add_action('admin_menu', array($this, 'add_menu_page')); /* Add admin menu and page */
     add_action('admin_enqueue_scripts', array($this, 'add_assets'));
 
     // Register AJAX functions from CMS admin front-end
-    add_action('wp_ajax_import_jobs', array($this->idx_api, 'import_jobs'));
-    add_action('wp_ajax_publish_job', array($this->idx_api, 'publish_job'));
-    add_action('wp_ajax_trash_job', array($this->idx_api, 'trash_job'));
+    add_action('wp_ajax_import_jobs', array($this->api, 'import_jobs'));
+    add_action('wp_ajax_publish_job', array($this->api, 'publish_job'));
+    add_action('wp_ajax_trash_job', array($this->api, 'trash_job'));
     add_action('wp_ajax_subscribe_to_webhook', array($this, 'subscribe_to_webhook'));
     add_action('wp_ajax_get_webhook_subscriptions', array($this, 'get_webhook_subscriptions'));
     add_action('wp_ajax_delete_webhook_subscription', array($this, 'delete_webhook_subscription'));
@@ -28,7 +28,7 @@ class IDX_SmartRecruiters_Admin {
       $page_title = 'SmartRecruiters';
       $menu_title = 'SmartRecruiters';
       $capability = 'edit_others_posts';
-      $menu_slug = 'idx-smartrecruiters';
+      $menu_slug = 'smartrecruiters';
       $parent_slug = $menu_slug;
       $function = array($this, 'render_import_page');
       $icon_url = 'dashicons-cloud-saved';
@@ -89,7 +89,7 @@ class IDX_SmartRecruiters_Admin {
     $response = array();
     $url = get_site_url();
     $callback = $url . '/wp-json/jobs/v1/webhook/';
-    $token = $this->idx_api->fetch_token();
+    $token = $this->api->fetch_token();
 
     // Configure curl array
     curl_setopt_array($curl, array(
@@ -132,7 +132,7 @@ class IDX_SmartRecruiters_Admin {
   public function generate_webhook_secretkey($id) {
     $curl = curl_init();
     $response = array();
-    $token = $this->idx_api->fetch_token();
+    $token = $this->api->fetch_token();
 
     // Configure curl array
     curl_setopt_array($curl, array(
@@ -159,7 +159,7 @@ class IDX_SmartRecruiters_Admin {
   public function activate_webhook_subscription($id) {
     $curl = curl_init();
     $response = array();
-    $token = $this->idx_api->fetch_token();
+    $token = $this->api->fetch_token();
 
     // Configure curl array
     curl_setopt_array($curl, array(
@@ -188,7 +188,7 @@ class IDX_SmartRecruiters_Admin {
   public function delete_webhook_subscription() {
     $curl = curl_init();
     $response = array();
-    $token = $this->idx_api->fetch_token();
+    $token = $this->api->fetch_token();
     $id = $_POST['id'];
 
     // Configure curl array
@@ -216,7 +216,7 @@ class IDX_SmartRecruiters_Admin {
   public function get_webhook_subscriptions() {
     $curl = curl_init();
     $response = array();
-    $token = $this->idx_api->fetch_token();
+    $token = $this->api->fetch_token();
 
     // Configure curl array
     curl_setopt_array($curl, array(
@@ -243,7 +243,7 @@ class IDX_SmartRecruiters_Admin {
   public function get_webhook_notifications() {
     $curl = curl_init();
     $response = array();
-    $token = $this->idx_api->fetch_token();
+    $token = $this->api->fetch_token();
     $subscription_id = get_option('smartrecruiters_webhook_subscription_id');
 
     // Configure curl array

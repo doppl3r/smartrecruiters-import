@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
   });
 
   // Add filter reset action
-  filters.find('.idx-sr-reset-filter').on('click', function(e) {
+  filters.find('.sr-reset-filter').on('click', function(e) {
     e.preventDefault();
     resetFilter();
     form.submit();
@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
       var community = '';
       
       // Populate array of values into community array
-      var community_checkboxes = filters.find('#idx-sr-community input[type="checkbox"]');
+      var community_checkboxes = filters.find('#sr-community input[type="checkbox"]');
       var community_array = [];
       community_checkboxes.each(function(index, checkbox) {
         if (index > -1) {
@@ -79,20 +79,20 @@ jQuery(document).ready(function($) {
     var total = data['pagination']['totalFound'];
 
     // Append total
-    results.append('<div class="idx-sr-total">' + total + ' jobs found.</div>');
+    results.append('<div class="sr-total">' + total + ' jobs found.</div>');
 
     // Append jobs
     jobs.forEach(function(job) {
       var row =
-      '<div class="idx-sr-job">' +
+      '<div class="sr-job">' +
         '<h3 class="title"><a href="' + job['link'] + '">' + job['title'] + '</a></h3>' +
         '<span class="subtitle">' + job['city'] + ', ' + job['region_code'] + ' - ' + job['community'] + '</span>' +
         '<p class="description">' + job['description'] + '</p>' +
-        '<div class="idx-sr-details">' +
+        '<div class="sr-details">' +
             '<span class="address">' + job['address'] + ', ' + job['city'] + ', ' + job['region_code'] + ' ' + job['zip'] + ', ' + job['country_code'].toUpperCase()+ ', ' + job['distance']+' Miles away ' + '</span>' +
             '<span class="employment">' + job['employment'] + '</span>' +
             '<span class="hourly-rate">Hourly Rate: ' + job['hourly'] + '</span>' +
-            '<a class="idx-sr-btn" href="' + job['link'] + '">Apply Now</a>' +
+            '<a class="sr-btn" href="' + job['link'] + '">Apply Now</a>' +
         '</div>' +
       '</div>';
       results.append(row);
@@ -126,7 +126,7 @@ jQuery(document).ready(function($) {
         link.on('click', function(e) {
           e.preventDefault();
           var item_offset = parseInt($(this).attr('data-offset'));
-          var top = $('.idx-sr-search').offset().top - $('header').height() - $('#wpadminbar').height();
+          var top = $('.sr-search').offset().top - $('header').height() - $('#wpadminbar').height();
           searchJobs(item_offset, limit);
           $('html, body').animate({ scrollTop: top }, 1000);
         })
@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
 
   function updateFilters(data) {
     var department = filters.find('select[name="department"]');
-    var community = filters.find('#idx-sr-community');
+    var community = filters.find('#sr-community');
 
     // Update options from search results
     department.children().not(':first').remove();
@@ -182,7 +182,7 @@ jQuery(document).ready(function($) {
   function resetFilter() {
     // Reset filter input values
     filters.find('select[name="department"]').val(filters.find('select[name="department"] option:first').val());
-    filters.find('#idx-sr-community .group:first-of-type input').prop('checked', true);
+    filters.find('#sr-community .group:first-of-type input').prop('checked', true);
     filters.find('input[name="full-time"]').prop('checked', true);
     filters.find('input[name="part-time"]').prop('checked', true);
   }

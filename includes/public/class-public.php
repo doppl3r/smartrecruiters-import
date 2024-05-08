@@ -1,13 +1,13 @@
 <?php
 
-class IDX_SmartRecruiters_Public {
+class SmartRecruiters_Public {
   private $shortcodes;
-  private $idx_api;
+  private $api;
 
   public function __construct() {
     // Require API class helper
 		require_once __DIR__ . '/../class-api.php';
-		$this->idx_api = new IDX_SmartRecruiters_API();
+		$this->api = new SmartRecruiters_API();
 
     // Initialize assets
     add_action('wp_enqueue_scripts', array($this, 'add_assets'));
@@ -20,7 +20,7 @@ class IDX_SmartRecruiters_Public {
 
     // Load shortcode class
     require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-shortcodes.php';
-    $this->shortcodes = new IDX_SmartRecruiters_Shortcodes();
+    $this->shortcodes = new SmartRecruiters_Shortcodes();
 
     // Register AJAX functions from CMS admin front-end
     add_action('wp_ajax_search_jobs', array($this, 'search_jobs'));
@@ -144,7 +144,8 @@ class IDX_SmartRecruiters_Public {
         // Publish or update job page
         if ($event == 'job.created' || $event == 'job.updated' || $event == 'job.status.updated') {
           $_POST['id'] = $id;
-          $this->idx_api->publish_job();
+          sleep(10); // Delay query 10 seconds to prevent old data from publishing
+          $this->api->publish_job();
         }
       }
     }
@@ -207,7 +208,7 @@ class IDX_SmartRecruiters_Public {
 
         $args['meta_query'][] = array(
           'relation'  => 'OR',
-          array('key' => 'idx_smartrecruiters_title', 'value' => $word, 'compare' => 'LIKE')
+          array('key' => 'smartrecruiters_title', 'value' => $word, 'compare' => 'LIKE')
         );
       }
     }
@@ -218,10 +219,10 @@ class IDX_SmartRecruiters_Public {
       foreach ($words as $key => $word) {
         $args['meta_query'][] = array(
           'relation'  => 'OR',
-          array('key' => 'idx_smartrecruiters_city', 'value' => $word, 'compare' => 'LIKE'),
-          array('key' => 'idx_smartrecruiters_region', 'value' => $word, 'compare' => 'LIKE'),
-          array('key' => 'idx_smartrecruiters_region_code', 'value' => $word, 'compare' => 'LIKE'),
-          array('key' => 'idx_smartrecruiters_postal_code', 'value' => $word, 'compare' => 'LIKE')
+          array('key' => 'smartrecruiters_city', 'value' => $word, 'compare' => 'LIKE'),
+          array('key' => 'smartrecruiters_region', 'value' => $word, 'compare' => 'LIKE'),
+          array('key' => 'smartrecruiters_region_code', 'value' => $word, 'compare' => 'LIKE'),
+          array('key' => 'smartrecruiters_postal_code', 'value' => $word, 'compare' => 'LIKE')
         );
       }
     }
@@ -230,13 +231,13 @@ class IDX_SmartRecruiters_Public {
     if ($department != 'all') {
       $args['meta_query'][] = array(
         'relation'  => 'OR',
-        array('key' => 'idx_smartrecruiters_department', 'value' => $department, 'compare' => 'LIKE')
+        array('key' => 'smartrecruiters_department', 'value' => $department, 'compare' => 'LIKE')
       );
     }
 
     // Search by communities
     foreach ($queryComunity->posts as $key => $post) {
-      $community_name = get_post_meta($post->ID, 'idx_smartrecruiters_location_name', true);
+      $community_name = get_post_meta($post->ID, 'smartrecruiters_location_name', true);
       if (!empty($community_name)) $communities[$community_name] = $community_name; // Map community keys/values 
     }
     $all_comunities = "";
@@ -255,7 +256,7 @@ class IDX_SmartRecruiters_Public {
 
           $args['meta_query'][] = array(
             'relation'  => 'OR',
-            array('key' => 'idx_smartrecruiters_location_name', 'value' => $community_name, 'compare' => 'LIKE')
+            array('key' => 'smartrecruiters_location_name', 'value' => $community_name, 'compare' => 'LIKE')
           );
         }
       }
@@ -265,7 +266,7 @@ class IDX_SmartRecruiters_Public {
     if ($part_time == 'false') {
       $args['meta_query'][] = array(
         'relation'  => 'OR',
-        array('key' => 'idx_smartrecruiters_employment_type', 'value' => 'Full-time', 'compare' => 'LIKE')
+        array('key' => 'smartrecruiters_employment_type', 'value' => 'Full-time', 'compare' => 'LIKE')
       );
     }
 
@@ -273,7 +274,7 @@ class IDX_SmartRecruiters_Public {
     if ($full_time == 'false') {
       $args['meta_query'][] = array(
         'relation'  => 'OR',
-        array('key' => 'idx_smartrecruiters_employment_type', 'value' => 'Part-time', 'compare' => 'LIKE')
+        array('key' => 'smartrecruiters_employment_type', 'value' => 'Part-time', 'compare' => 'LIKE')
       );
     }
 
@@ -295,8 +296,8 @@ class IDX_SmartRecruiters_Public {
     $totalPosts = 0;
     $posts = array();    
     foreach ($query->posts as $key => $post) {
-      $latitude = floatval(get_post_meta($post->ID, 'idx_smartrecruiters_latitude', true));
-      $longitude = floatval(get_post_meta($post->ID, 'idx_smartrecruiters_longitude', true));
+      $latitude = floatval(get_post_meta($post->ID, 'smartrecruiters_latitude', true));
+      $longitude = floatval(get_post_meta($post->ID, 'smartrecruiters_longitude', true));
       $distanceBetween = round($this->calculate_distance_between_lat_long($userLat, $userLong,$latitude,$longitude));
       if ($distanceBetween <= $distance) {
           $post->distance = $distanceBetween;
@@ -310,19 +311,19 @@ class IDX_SmartRecruiters_Public {
     foreach ($posts as $key => $post) {
       // Set post meta variables
       $description = mb_strimwidth($post->post_excerpt, 0, 360, '...');
-      $address = get_post_meta($post->ID, 'idx_smartrecruiters_address', true);
-      $city = get_post_meta($post->ID, 'idx_smartrecruiters_city', true);
-      $region_code = get_post_meta($post->ID, 'idx_smartrecruiters_region_code', true);
-      $zip = get_post_meta($post->ID, 'idx_smartrecruiters_postal_code', true);
-      $country = get_post_meta($post->ID, 'idx_smartrecruiters_country', true);
-      $country_code = get_post_meta($post->ID, 'idx_smartrecruiters_country_code', true);
-      $employment = get_post_meta($post->ID, 'idx_smartrecruiters_full_part_time', true);
-      $hourly_min = get_post_meta($post->ID, 'idx_smartrecruiters_hourly_rate_minimum', true);
-      $hourly_max = get_post_meta($post->ID, 'idx_smartrecruiters_hourly_rate_maximum', true);
-      $community_name = get_post_meta($post->ID, 'idx_smartrecruiters_location_name', true);
-      $department_name = get_post_meta($post->ID, 'idx_smartrecruiters_department', true);
-      $latitude = floatval(get_post_meta($post->ID, 'idx_smartrecruiters_latitude', true));
-      $longitude = floatval(get_post_meta($post->ID, 'idx_smartrecruiters_longitude', true));
+      $address = get_post_meta($post->ID, 'smartrecruiters_address', true);
+      $city = get_post_meta($post->ID, 'smartrecruiters_city', true);
+      $region_code = get_post_meta($post->ID, 'smartrecruiters_region_code', true);
+      $zip = get_post_meta($post->ID, 'smartrecruiters_postal_code', true);
+      $country = get_post_meta($post->ID, 'smartrecruiters_country', true);
+      $country_code = get_post_meta($post->ID, 'smartrecruiters_country_code', true);
+      $employment = get_post_meta($post->ID, 'smartrecruiters_full_part_time', true);
+      $hourly_min = get_post_meta($post->ID, 'smartrecruiters_hourly_rate_minimum', true);
+      $hourly_max = get_post_meta($post->ID, 'smartrecruiters_hourly_rate_maximum', true);
+      $community_name = get_post_meta($post->ID, 'smartrecruiters_location_name', true);
+      $department_name = get_post_meta($post->ID, 'smartrecruiters_department', true);
+      $latitude = floatval(get_post_meta($post->ID, 'smartrecruiters_latitude', true));
+      $longitude = floatval(get_post_meta($post->ID, 'smartrecruiters_longitude', true));
       $distanceBetween = apply_filters( 'distance', $post->distance );
       if (!empty($hourly_min) && empty($hourly_max)) $hourly = $hourly_min;
       else if (empty($hourly_min) && !empty($hourly_max)) $hourly = $hourly_max;

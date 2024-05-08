@@ -2,12 +2,12 @@
 jQuery(document).ready(function($) {
   var jobs = [];
   var trash = [];
-  var list = $('.idx-sr-list');
+  var list = $('.sr-list');
   var start; // Elapsed time
   var timer;
 
   // Add click event for importing jobs
-  $('.idx-sr-btn[action]').on('click', function(e) {
+  $('.sr-btn[action]').on('click', function(e) {
     e.preventDefault();
     var button = $(this);
     var action = button.attr('action');
@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
 
     // Perform actions
     if (button.hasClass('disabled') == false) {
-      $('.idx-sr-btn[action]').addClass('disabled'); // Disable all buttons
+      $('.sr-btn[action]').addClass('disabled'); // Disable all buttons
       jobs = []; // Empty jobs array
       trash = []; // Empty trash array
       list.empty(); // Empty job HTML list
@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
         else {
           // Notify incorrect input value
           updateProgressBar(0, 1, 'Error! Please enter an existing Job ID');
-          $('.idx-sr-btn[action]').removeClass('disabled');
+          $('.sr-btn[action]').removeClass('disabled');
           stopTimer();
         }
       }
@@ -76,8 +76,8 @@ jQuery(document).ready(function($) {
 
   function updateProgressBar(index = 0, length = 1, text = '') {
     var percent = (index / length) * 100;
-    var progress = $('.idx-sr-progress');
-    var bar = $('.idx-sr-progress-bar');
+    var progress = $('.sr-progress');
+    var bar = $('.sr-progress-bar');
     if (percent > 100) percent = 100;
     progress.attr('data-text', text)
     bar.attr('data-percent', parseInt(percent));
@@ -88,7 +88,7 @@ jQuery(document).ready(function($) {
     // Only add jobs with 'PUBLIC' posting status
     if (job['postingStatus'] == 'PUBLIC' || force == true) {
       jobs.push(job);
-      addRowToList(job['id'], '<span class="idx-sr-status queued"></span>' + '(' + jobs.length + ') ' + job['title']);
+      addRowToList(job['id'], '<span class="sr-status queued"></span>' + '(' + jobs.length + ') ' + job['title']);
     }
     else {
       // Add to list of jobs to remove from WP
@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
   }
 
   function addRowToList(id, text) {
-    var row = '<a class="idx-sr-row" id="' + id + '">' + text + '</a>';
+    var row = '<a class="sr-row" id="' + id + '">' + text + '</a>';
     list.prepend(row);
   }
 
@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
         var data = response['data'];
         var row = $('#' + id);
         console.log(data);
-        if (data['status']) row.find('.idx-sr-status').attr('class', 'idx-sr-status ' + data['status']);
+        if (data['status']) row.find('.sr-status').attr('class', 'sr-status ' + data['status']);
         if (data['job']){
           row.attr('href', data['job']['link']);
           row.attr('target', '_blank');
@@ -141,7 +141,7 @@ jQuery(document).ready(function($) {
     else {
       // Finished
       updateProgressBar(0, 1, 'Finished!');
-      $('.idx-sr-btn[action]').removeClass('disabled');
+      $('.sr-btn[action]').removeClass('disabled');
       stopTimer();
     }
   }
@@ -153,7 +153,7 @@ jQuery(document).ready(function($) {
       var hours = parseInt(Math.floor(((time % 31536000) % 86400) / 3600), 10);
       var minutes = parseInt(Math.floor((((time % 31536000) % 86400) % 3600) / 60), 10);
       var seconds = parseInt((((time % 31536000) % 86400) % 3600) % 60, 10);
-      $('.idx-sr-time').text(
+      $('.sr-time').text(
         ((hours < 10) ? "0" + hours : hours) + ":" + 
         ((minutes < 10) ? "0" + minutes : minutes) + ":" + 
         ((seconds < 10) ? "0" + seconds : seconds)

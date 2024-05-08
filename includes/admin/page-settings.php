@@ -33,16 +33,16 @@
   }
 
   // Fetch token
-  $token = $this->idx_api->fetch_token();
+  $token = $this->api->fetch_token();
 ?>
-<div class="idx-sr-admin">
+<div class="sr-admin">
   <?php require_once 'header.php' ?>
-  <div class="idx-sr-content">
+  <div class="sr-content">
     <div class="row">
       <div class="col">
         <h2>Settings</h2>
-        <p>Update IDX SmartRecruiters API settings.</p>
-        <form class="idx-sr-settings" action="" method="post">
+        <p>Update SmartRecruiters API settings.</p>
+        <form class="sr-settings" action="" method="post">
           <div class="row">
             <label for="client_id">Client ID</label>
             <input id="client_id" name="client_id" value="<?php echo $client_id; ?>" type="text">
@@ -60,19 +60,19 @@
             <input id="token" name="token" value="<?php echo $token; ?>" type="text" disabled>
           </div>
           <div class="row">
-            <button class="idx-sr-btn" name="save_settings">Save</button>
+            <button class="sr-btn" name="save_settings">Save</button>
           </div>
         </form>
       </div>
       <div class="col">
         <h2>Webhook Subscriptions</h2>
         <p>Update Webhook subscriptions.</p>
-        <a href="#" class="idx-sr-btn subscribe-to-webhook">Add New</a>
+        <a href="#" class="sr-btn subscribe-to-webhook">Add New</a>
         <!-- Loaded using scripts.js AJAX and class-admin.php -->
         <div class="webhook-subscriptions loading"></div>
         <h2>Webhook Notifications</h2>
         <p>View recent notification.</p>
-        <a href="#" class="idx-sr-btn refresh-notifications">Refresh</a>
+        <a href="#" class="sr-btn refresh-notifications">Refresh</a>
         <div class="webhook-notifications loading"></div>
       </div>
     </div>

@@ -1,63 +1,63 @@
-.idx-sr-single {
+.sr-single {
   padding: 40px 0px;
 }
 
-.idx-sr-single .idx-sr-breadcrumbs {
+.sr-single .sr-breadcrumbs {
   margin-bottom: 20px;
 }
 
-.idx-sr-single .idx-sr-breadcrumbs a {
+.sr-single .sr-breadcrumbs a {
   color: #1a1a1a;
   font-size: 18px;
 }
 
-.idx-sr-single .idx-sr-breadcrumbs a:after {
+.sr-single .sr-breadcrumbs a:after {
   content: '>';
   display: inline-block;
   margin: 0px 4px;
 }
 
-.idx-sr-single .idx-sr-breadcrumbs a:last-of-type {
+.sr-single .sr-breadcrumbs a:last-of-type {
   font-weight: bold;
   pointer-events: none;
 }
 
-.idx-sr-single .idx-sr-breadcrumbs a:last-of-type:after {
+.sr-single .sr-breadcrumbs a:last-of-type:after {
   display: none;
 }
 
-.idx-sr-single .idx-sr-breadcrumbs .separator {
+.sr-single .sr-breadcrumbs .separator {
   padding: 0px 5px;
 }
 
-.idx-sr-single .idx-sr-logo {
+.sr-single .sr-logo {
   height: 100px;
   width: auto;
 }
 
-.idx-sr-single .idx-sr-content h3 {
+.sr-single .sr-content h3 {
   color: #1a1a1a;
   font-size: 18px;
   font-family: Nunito, sans-serif;
   font-weight: bold;
 }
 
-.idx-sr-single .idx-sr-content p a {
+.sr-single .sr-content p a {
   text-decoration: underline;
 }
 
-.idx-sr-single .idx-sr-content p u {
+.sr-single .sr-content p u {
   text-decoration: initial;
 }
 
-.idx-sr-single .idx-sr-map {
+.sr-single .sr-map {
   width: 100%;
   height: 240px;
   background-color: #f1f1f1;
   margin-bottom: 12px;
 }
 
-.idx-sr-single .btn {
+.sr-single .btn {
   display: inline-block;
   background-color: #DEDEDE;
   color: #1A1A1A;
@@ -68,13 +68,13 @@
   text-transform: uppercase;
 }
 
-.idx-sr-single .btn.btn-primary {
+.sr-single .btn.btn-primary {
   background-color: #177E89; 
   border: none;
   color: #fff;
 }
 
-.idx-sr-single .idx-sr-details {
+.sr-single .sr-details {
   align-items: center;
   display: flex;
   gap: 16px;
@@ -83,12 +83,12 @@
   line-height: 14px;
 }
 
-.idx-sr-single .idx-sr-details > * {
+.sr-single .sr-details > * {
   display: flex;
   align-items: center;
 }
 
-.idx-sr-single .idx-sr-details .address:before {
+.sr-single .sr-details .address:before {
   display: inline-block;
   content: url('../img/svg/icon-location.svg');
   width: 24px;
@@ -96,7 +96,7 @@
   margin-right: 4px;
 }
 
-.idx-sr-single .idx-sr-details .employment:before {
+.sr-single .sr-details .employment:before {
   display: inline-block;
   content: url('../img/svg/icon-time.svg');
   width: 24px;
@@ -104,7 +104,7 @@
   margin-right: 4px;
 }
 
-.idx-sr-single .idx-sr-details .hourly-rate:before {
+.sr-single .sr-details .hourly-rate:before {
   display: inline-block;
   content: url('../img/svg/icon-location.svg');
   width: 24px;
@@ -112,65 +112,65 @@
   margin-right: 4px;
 }
 
-.idx-sr-single .sidebar {
+.sr-single .sidebar {
   background-color: #f1f1f1;
   border-radius: 20px;
   padding: 30px;
 }
 
-.idx-sr-single .sidebar .actions {
+.sr-single .sidebar .actions {
   margin-bottom: 30px;
 }
 
-.idx-sr-single .sidebar .actions [href="#"] {
+.sr-single .sidebar .actions [href="#"] {
   opacity: 0.25;
   pointer-events: none;
 }
 
-.idx-sr-single .sidebar h3 {
+.sr-single .sidebar h3 {
   font-size: 20px;
   color: #1a1a1a;
 }
 
-.idx-sr-single .sidebar .idx-sr-social {
+.sr-single .sidebar .sr-social {
   display: flex;
   gap: 12px;
   padding-top: 8px;
   margin-bottom: 30px;
 }
 
-#idx-sr-community{
+#sr-community{
   max-height: 200px;
   overflow-y: auto;
 }
 
-.idx-sr-single .sidebar .idx-sr-other-communities {
+.sr-single .sidebar .sr-other-communities {
   list-style: none;
   padding: 10px 0px 0px;
   margin: 0;
 }
 
-.idx-sr-single .sidebar .idx-sr-other-communities li {
+.sr-single .sidebar .sr-other-communities li {
 
 }
 
-.idx-sr-single .sidebar .idx-sr-other-communities li a {
+.sr-single .sidebar .sr-other-communities li a {
   color: #1a1a1a;
 }
-.idx-sr-single .sidebar .idx-sr-other-communities li a:hover {
+.sr-single .sidebar .sr-other-communities li a:hover {
   text-decoration: underline;
 }
 
-.idx-sr-single .sidebar .idx-sr-other-communities li a .title {
+.sr-single .sidebar .sr-other-communities li a .title {
   font-weight: bold;
 }
 
-.idx-sr-single .sidebar .idx-sr-other-communities li a .title,
-.idx-sr-single .sidebar .idx-sr-other-communities li a .address {
+.sr-single .sidebar .sr-other-communities li a .title,
+.sr-single .sidebar .sr-other-communities li a .address {
   display: block;
 }
 
-.idx-sr-single .sidebar .search-link {
+.sr-single .sidebar .search-link {
   text-decoration: underline;
 }
 
