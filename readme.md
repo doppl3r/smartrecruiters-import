@@ -21,3 +21,17 @@ Your custom app must include the following scope:
 - webhooks_write
 
 Please copy the **Client ID** and **Client Secret** into a safe place after creating the new credentials. You will need to paste these into the Smartrecruiters WordPress settings page (www.example.com/wp-admin/admin.php?page=smartrecruiters-settings)
+
+## Screenshots
+
+Import Page:
+![Import](assets/public/img/png/smartrecruiters-wordpress-plugin-import.png)
+
+Settings Page:
+![Settings](assets/public/img/png/smartrecruiters-wordpress-plugin-settings.png)
+
+Job Search Page:
+![Search](assets/public/img/png/smartrecruiters-wordpress-plugin-search.png)
+
+Job Page:
+![Job](assets/public/img/png/smartrecruiters-wordpress-plugin-job.png)
